@@ -22,6 +22,32 @@ _src/test/resources/apks_
 | org.wikipedia.apk    | unknown | Old version up to date 02/18/2018             | [wikipedia](https://play.google.com/store/apps/details?id=org.wikipedia&hl=ru&gl=US) |
 | Wikipedia.app        | unknown | Actual official version up to date 05/05/2021 | [wikipedia-ios](https://github.com/wikimedia/wikipedia-ios)                          |
 
+## Работа с jenkins через командную строку (Mac)
+
+[Homebrew Installer](https://www.jenkins.io/download/lts/macos/)
+
+Install the latest LTS version: brew install jenkins-lts
+
+Install a specific LTS version: brew install jenkins-lts@YOUR_VERSION
+
+Start the Jenkins service: brew services start jenkins-lts
+
+Restart the Jenkins service: brew services restart jenkins-lts
+
+Update the Jenkins version: brew upgrade jenkins-lts
+
+## Работа с appium через командную строку (Mac)
+
+[Getting Started](http://appium.io/docs/en/about-appium/getting-started/?lang=en)
+
+brew install node (установка Node.js)
+
+npm install -g appium (установка appium)
+
+appium & (запуск appium)
+
+kill $(lsof -t -i :4723) (остановка appium)
+
 ## Лицензия
 
 Copyright © 2021 Lissa Rider
