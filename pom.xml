@@ -7,14 +7,24 @@
     <groupId>JavaAppium</groupId>
     <artifactId>JavaAppium</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.version>3.8.1</maven.compiler.version>
+        <project.compiler.encoding>UTF-8</project.compiler.encoding>
+        <project.compiler.version>8</project.compiler.version>
+        <appium.java.client.version>6.1.0</appium.java.client.version>
+        <junit.version>4.12</junit.version>
+    </properties>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <encoding>${project.compiler.encoding}</encoding>
+                    <source>${project.compiler.version}</source>
+                    <target>${project.compiler.version}</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -23,13 +33,13 @@
         <dependency>
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
-            <version>6.1.0</version>
+            <version>${appium.java.client.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
