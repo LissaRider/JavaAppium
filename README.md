@@ -2,6 +2,8 @@
 
 _Это учебный проект по курсу "Автоматизатор мобильных приложений"_
 
+_Связанный проект: [LissaRider/JavaAppiumAutomation](https://github.com/LissaRider/JavaAppiumAutomation)_
+
 ## Библиотеки
 
 | groupId                 | artifactId          | version | description                                    | homepage                                                               |
@@ -36,17 +38,33 @@ Restart the Jenkins service: brew services restart jenkins-lts
 
 Update the Jenkins version: brew upgrade jenkins-lts
 
-## Работа с appium через командную строку (Mac)
+## Работа с appium
+
+_Appium - это сервер, написанный на Node.js._
+
+_Его можно собрать и установить из исходного кода или установить непосредственно из NPM._
 
 [Getting Started](http://appium.io/docs/en/about-appium/getting-started/?lang=en)
 
-brew install node (установка Node.js)
+[appium/appium-desktop](https://github.com/appium/appium-desktop)
 
-npm install -g appium (установка appium)
+
+#### Установка Nod.js
+
+
+brew install node (Mac с помощью Homebrew)
+
+[node.js](https://nodejs.org/en/download/) (Mac/Windows)
+
+
+#### Команды appium
+
+
+npm install -g appium (установка appium, для Windows лучше с --force)
 
 appium & (запуск appium)
 
-kill $(lsof -t -i :4723) (остановка appium)
+kill $(lsof -t -i :4723) (остановка appium на Mac)
 
 ## Лицензия
 
