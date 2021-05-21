@@ -1,6 +1,5 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -14,6 +13,7 @@ abstract public class SearchPageObject extends MainPageObject {
             MAIN_PAGE_SEARCH_INIT_ELEMENT, /* INIT ELEMENT: элемент на главной странице для перехода на форму поиска */
             SEARCH_INPUT_FIELD, /* INPUT FIELD: поле ввода значения для поиска */
             SEARCH_CANCEL_BUTTON, /* BUTTON: кнопка для очистки поля ввода или закрытия формы поиска */
+            SEARCH_INPUT_CLEAR_BUTTON, /* BUTTON: кнопка для очистки поля ввода или закрытия формы поиска (только MW) */
             SEARCH_EMPTY_RESULT_ELEMENT,/* SEARCH RESULT: форма, отображающаяся, если по заданному запросу ничего не найдено */
             SEARCH_RESULT_LIST, /* SEARCH RESULT: список всех найденных результатов */
             SEARCH_RESULT_LIST_ITEM, /* SEARCH RESULT: элемент списка всех найденных результатов (результат поиска) */
@@ -21,7 +21,7 @@ abstract public class SearchPageObject extends MainPageObject {
             SEARCH_RESULT_LIST_ITEM_TITLE,  /* SEARCH RESULT: заголовок статьи в элементе списка */
             SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL, /* SEARCH RESULT: заголовок статьи в элементе списка всех найденных результатов с указанием текста в нем */
             SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL, /* SEARCH RESULT: элемент списка всех найденных результатов с указанием заголовка и описания в нем */
-            RECENT_SEARCHES_YET_ELEMENT; /* SEARCH ELEMENT: элемент с текстои, который отображается при очистке поля ввода для поиска (только iOS) */
+            RECENT_SEARCHES_YET_ELEMENT; /* SEARCH ELEMENT: элемент с текстом, который отображается при очистке поля ввода для поиска (только iOS) */
 
     public SearchPageObject(RemoteWebDriver driver) {
         super(driver);
@@ -33,7 +33,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     private static String getResultSearchElementWithTitle(String articleTitle) {
-        return SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL.replace("{TITLE}", articleTitle);
+        return SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL.replace("{TITLE}", articleTitle.replace("\n",""));
     }
 
     private static String getArticleWithTitleAndDescription(String articleTitle, String articleDescription) {
@@ -80,11 +80,15 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void clearSearchInput() {
-        this.waitForElementAndClear(SEARCH_INPUT_FIELD, "Поле ввода текста для поиска не найдено.", 5);
-        if (Platform.getInstance().isAndroid())
-            this.waitForElementNotPresent(SEARCH_RESULT_LIST, "Список результатов все ещё отображается.", 15);
+        if (Platform.getInstance().isMW())
+            this.waitForElementClickableAndClick(SEARCH_INPUT_CLEAR_BUTTON, "Кнопка очистки поля ввода текста для поиска не найдено.", 5);
         else
-            this.waitForElementVisible(RECENT_SEARCHES_YET_ELEMENT, "Список результатов все ещё отображается.", 15);
+            this.waitForElementAndClear(SEARCH_INPUT_FIELD, "Поле ввода текста для поиска не найдено.", 5);
+        String errorMessage = "Список результатов все ещё отображается.";
+        if (Platform.getInstance().isIOS())
+            this.waitForElementVisible(RECENT_SEARCHES_YET_ELEMENT, errorMessage, 15);
+        else
+            this.waitForElementNotPresent(SEARCH_RESULT_LIST, errorMessage, 15);
     }
 
     public List<WebElement> getSearchResultsList() {
@@ -136,7 +140,11 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     public void assertSearchPlaceholderHasText(String placeholder) {
-        this.assertElementHasText(SEARCH_INPUT_FIELD, placeholder, "Поле ввода для поиска статьи содержит некорректный текст.");
+        String errorMessage = "Поле ввода для поиска статьи содержит некорректный текст.";
+        if (Platform.getInstance().isMW())
+            this.assertElementHasPlaceholder(SEARCH_INPUT_FIELD, placeholder, errorMessage);
+        else
+            this.assertElementHasText(SEARCH_INPUT_FIELD, placeholder, errorMessage);
     }
 
     public void searchByValue(String searchLine) {

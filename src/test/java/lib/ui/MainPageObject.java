@@ -44,6 +44,13 @@ public class MainPageObject {
         Assert.assertEquals(String.format("\n  Ошибка! %s\n", errorMessage), expected, actual);
     }
 
+    public void assertElementHasPlaceholder(String locator, String expected, String errorMessage) {
+        By by = this.getLocatorByString(locator);
+        WebElement element = driver.findElement(by);
+        String actual = element.getAttribute("placeholder");
+        Assert.assertEquals(String.format("\n  Ошибка! %s\n", errorMessage), expected, actual);
+    }
+
     public WebElement waitForElementPresent(String locator, String errorMessage, long timeoutInSeconds) {
         By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);

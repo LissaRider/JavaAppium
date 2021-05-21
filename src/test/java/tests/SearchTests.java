@@ -21,7 +21,7 @@ public class SearchTests extends CoreTestCase {
         final String searchLine = "Java";
         searchPage.searchByValue(searchLine);
 
-        final String substring = "Object-oriented programming language";
+        final String substring = "bject-oriented programming language";
         searchPage.waitForSearchResult(substring);
     }
 
@@ -51,7 +51,7 @@ public class SearchTests extends CoreTestCase {
 
         assertTrue(
                 String.format("\n  Ошибка! Найдено меньше результатов, чем ожидалось: %d.\n", amountOfSearchResults),
-                amountOfSearchResults > 1);
+                amountOfSearchResults > 0);
     }
 
     @Test
@@ -103,9 +103,14 @@ public class SearchTests extends CoreTestCase {
 
         for (int i = 0; i < articleTitles.size(); i++) {
             final WebElement titleElement = articleTitles.get(i);
-            String articleTitle = Platform.getInstance().isAndroid()
-                    ? titleElement.getAttribute("text").toLowerCase()
-                    : titleElement.getAttribute("name").toLowerCase();
+            String articleTitle = "";
+            if (Platform.getInstance().isAndroid()) {
+                articleTitle = titleElement.getAttribute("text").toLowerCase();
+            } else if (Platform.getInstance().isIOS()) {
+                articleTitle = titleElement.getAttribute("name").toLowerCase();
+            } else if (Platform.getInstance().isMW()) {
+                articleTitle = titleElement.getAttribute("textContent").toLowerCase();
+            }
 
             assertTrue(
                     String.format("\n  Ошибка! В заголовке найденной статьи с индексом [%d] отсутствует заданное для поиска значение '%s'.\n", i, searchValue),

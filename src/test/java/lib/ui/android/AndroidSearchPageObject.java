@@ -1,6 +1,5 @@
 package lib.ui.android;
 
-import io.appium.java_client.AppiumDriver;
 import lib.ui.SearchPageObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -10,7 +9,7 @@ public class AndroidSearchPageObject extends SearchPageObject {
         MAIN_PAGE_SEARCH_INIT_ELEMENT = "xpath://android.widget.ImageView[@content-desc='Search Wikipedia']";
         SEARCH_INPUT_FIELD = "id:org.wikipedia:id/search_src_text";
         SEARCH_CANCEL_BUTTON = "id:org.wikipedia:id/search_close_btn";
-        SEARCH_RESULT_BY_LIST_ITEM_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='{SUBSTRING}']";
+        SEARCH_RESULT_BY_LIST_ITEM_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_container']//*[contains(@text,'{SUBSTRING}')]";
         SEARCH_RESULT_LIST_ITEM_TITLE = "id:org.wikipedia:id/page_list_item_title";
         SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']";
         SEARCH_RESULT_LIST_ITEM = "id:org.wikipedia:id/page_list_item_container";
