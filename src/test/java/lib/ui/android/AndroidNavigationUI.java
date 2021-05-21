@@ -2,6 +2,7 @@ package lib.ui.android;
 
 import io.appium.java_client.AppiumDriver;
 import lib.ui.NavigationUI;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AndroidNavigationUI extends NavigationUI {
     static {
@@ -10,7 +11,7 @@ public class AndroidNavigationUI extends NavigationUI {
         MY_LISTS_PAGE_TITLE = "xpath://*[@resource-id='org.wikipedia:id/single_fragment_toolbar']/*[@text='My lists']";
     }
 
-    public AndroidNavigationUI(AppiumDriver driver) {
+    public AndroidNavigationUI(RemoteWebDriver driver) {
         super(driver);
     }
 }

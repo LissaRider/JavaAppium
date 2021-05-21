@@ -3,6 +3,7 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -22,7 +23,7 @@ abstract public class SearchPageObject extends MainPageObject {
             SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL, /* SEARCH RESULT: элемент списка всех найденных результатов с указанием заголовка и описания в нем */
             RECENT_SEARCHES_YET_ELEMENT; /* SEARCH ELEMENT: элемент с текстои, который отображается при очистке поля ввода для поиска (только iOS) */
 
-    public SearchPageObject(AppiumDriver driver) {
+    public SearchPageObject(RemoteWebDriver driver) {
         super(driver);
     }
 

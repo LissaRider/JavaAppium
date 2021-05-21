@@ -2,6 +2,7 @@ package lib.ui.ios;
 
 import io.appium.java_client.AppiumDriver;
 import lib.ui.NavigationUI;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class iOSNavigationUI extends NavigationUI
 {
@@ -11,7 +12,7 @@ public class iOSNavigationUI extends NavigationUI
         MY_LISTS_PAGE_TITLE ="xpath://XCUIElementTypeToolbar[@name='Toolbar']//XCUIElementTypeStaticText[@name='Saved']";
     }
 
-    public iOSNavigationUI(AppiumDriver driver){
+    public iOSNavigationUI(RemoteWebDriver driver){
         super(driver);
     }
 }
