@@ -10,6 +10,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -19,9 +20,9 @@ import java.util.regex.Pattern;
 
 public class MainPageObject {
 
-    protected AppiumDriver driver;
+    protected RemoteWebDriver driver;
 
-    public MainPageObject(AppiumDriver driver) {
+    public MainPageObject(RemoteWebDriver driver) {
         this.driver = driver;
     }
 
@@ -114,17 +115,21 @@ public class MainPageObject {
     }
 
     public void swipeUp(int timeOfSwipe) {
-        TouchAction action = new TouchAction(driver);
-        Dimension size = driver.manage().window().getSize();
-        int x = size.width / 2;
-        int startY = (int) (size.height * 0.8);
-        int endY = (int) (size.height * 0.2);
-        action
-                .press(PointOption.point(x, startY))
-                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(timeOfSwipe)))
-                .moveTo(PointOption.point(x, endY))
-                .release()
-                .perform();
+        if (driver instanceof AppiumDriver) {
+            TouchAction action = new TouchAction((AppiumDriver) driver);
+            Dimension size = driver.manage().window().getSize();
+            int x = size.width / 2;
+            int startY = (int) (size.height * 0.8);
+            int endY = (int) (size.height * 0.2);
+            action
+                    .press(PointOption.point(x, startY))
+                    .waitAction(WaitOptions.waitOptions(Duration.ofMillis(timeOfSwipe)))
+                    .moveTo(PointOption.point(x, endY))
+                    .release()
+                    .perform();
+        } else {
+            System.out.printf("  Внимание! Метод swipeUp() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
+        }
     }
 
     public void swipeUpQuick() {
@@ -165,41 +170,48 @@ public class MainPageObject {
     }
 
     public void clickElementToTheRightUpperCorner(String locator, String errorMessage) {
-        WebElement element = this.waitForElementPresent(locator + "/..", errorMessage);
-        int rightX = element.getLocation().getX();
-        int upperY = element.getLocation().getY();
-        int lowerY = upperY + element.getSize().getHeight();
-        int middleY = (upperY + lowerY) / 2;
-        int width = element.getSize().getWidth();
+        if (driver instanceof AppiumDriver) {
+            WebElement element = this.waitForElementPresent(locator + "/..", errorMessage);
+            int rightX = element.getLocation().getX();
+            int upperY = element.getLocation().getY();
+            int lowerY = upperY + element.getSize().getHeight();
+            int middleY = (upperY + lowerY) / 2;
+            int width = element.getSize().getWidth();
 
-        int pointToClickX = (rightX + width) - 3;
-        int pointToClickY = middleY;
+            int pointToClickX = (rightX + width) - 3;
+            int pointToClickY = middleY;
 
-        TouchAction action = new TouchAction(driver);
-        action.tap(PointOption.point(pointToClickX, pointToClickY)).perform();
+            TouchAction action = new TouchAction((AppiumDriver) driver);
+            action.tap(PointOption.point(pointToClickX, pointToClickY)).perform();
+        } else {
+            System.out.printf("  Внимание! Метод clickElementToTheRightUpperCorner() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
+        }
     }
 
     public void swipeElementToLeft(String locator, String errorMessage) {
+        if (driver instanceof AppiumDriver) {
+            WebElement element = waitForElementPresent(locator, errorMessage, 10);
 
-        WebElement element = waitForElementPresent(locator, errorMessage, 10);
+            int leftX = element.getLocation().getX();
+            int rightX = leftX + element.getSize().getWidth();
+            int upperY = element.getLocation().getY();
+            int lowerY = upperY + element.getSize().getHeight();
+            int middleY = (upperY + lowerY) / 2;
 
-        int leftX = element.getLocation().getX();
-        int rightX = leftX + element.getSize().getWidth();
-        int upperY = element.getLocation().getY();
-        int lowerY = upperY + element.getSize().getHeight();
-        int middleY = (upperY + lowerY) / 2;
-
-        TouchAction action = new TouchAction(driver);
-        action
-                .press(PointOption.point(rightX, middleY))
-                .waitAction(WaitOptions.waitOptions(Duration.ofMillis(300)));
-        if (Platform.getInstance().isAndroid()) {
-            action.moveTo(PointOption.point(leftX, middleY));
+            TouchAction action = new TouchAction((AppiumDriver) driver);
+            action
+                    .press(PointOption.point(rightX, middleY))
+                    .waitAction(WaitOptions.waitOptions(Duration.ofMillis(300)));
+            if (Platform.getInstance().isAndroid()) {
+                action.moveTo(PointOption.point(leftX, middleY));
+            } else {
+                int offsetX = (-1 * element.getSize().getWidth());
+                action.moveTo(PointOption.point(offsetX, 0));
+            }
+            action.release().perform();
         } else {
-            int offsetX = (-1 * element.getSize().getWidth());
-            action.moveTo(PointOption.point(offsetX, 0));
+            System.out.printf("  Внимание! Метод swipeElementToLeft() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
         }
-        action.release().perform();
     }
 
     public int getAmountOfElements(String locator) {
@@ -246,6 +258,8 @@ public class MainPageObject {
                 return By.xpath(locator);
             case "id":
                 return By.id(locator);
+            case "css":
+                return By.cssSelector(locator);
             default:
                 throw new IllegalArgumentException(String.format("Невозможно получить тип локатора: %s", locatorWithType));
         }
