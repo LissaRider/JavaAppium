@@ -49,8 +49,7 @@ _Его можно собрать и установить из исходног�
 [appium/appium-desktop](https://github.com/appium/appium-desktop)
 
 
-#### Установка Nod.js
-
+#### Установка Node.js
 
 brew install node (Mac с помощью Homebrew)
 
@@ -58,7 +57,6 @@ brew install node (Mac с помощью Homebrew)
 
 
 #### Команды appium
-
 
 npm install -g appium (установка appium, для Windows лучше с --force)
 
