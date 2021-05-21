@@ -18,6 +18,7 @@ public class CoreTestCase extends TestCase {
         driver = Platform.getInstance().getDriver();
         this.rotateScreenPortrait();
         this.skipWelcomePageForIOSApp();
+        this.openWikiWebPageForMobileWeb();
     }
 
     @Override
@@ -53,11 +54,19 @@ public class CoreTestCase extends TestCase {
         }
     }
 
-    private void skipWelcomePageForIOSApp() {
-        if (Platform.getInstance().isIOS()) {
-            AppiumDriver driver = (AppiumDriver) this.driver;
-            WelcomePageObject WelcomePageObject = new WelcomePageObject(driver);
-            WelcomePageObject.clickSkip();
+    protected void openWikiWebPageForMobileWeb() {
+        if (Platform.getInstance().isMW()) {
+            driver.get("https://en.m.wikipedia.org");
+        } else {
+            System.out.printf("  Внимание! Метод openWikiWebPageForMobileWeb() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
         }
     }
-}
+
+        private void skipWelcomePageForIOSApp () {
+            if (Platform.getInstance().isIOS()) {
+                AppiumDriver driver = (AppiumDriver) this.driver;
+                WelcomePageObject WelcomePageObject = new WelcomePageObject(driver);
+                WelcomePageObject.clickSkip();
+            }
+        }
+    }
