@@ -1,18 +1,19 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 abstract public class MyListsPageObject extends MainPageObject {
 
     protected static String
+            MY_LISTS_PAGE_TITLE,
             FOLDER_BY_NAME_TPL,
             ARTICLE_LIST,
             ARTICLE_LIST_ITEM,
             ARTICLE_BY_TITLE_TPL,
             SYNC_YOUR_SAVED_ARTICLES_POPUP,
-            CLOSE_SYNC_POPUP_BUTTON;
+            CLOSE_SYNC_POPUP_BUTTON,
+            REMOVE_FROM_SAVED_LIST_BUTTON_TPL;
 
     public MyListsPageObject(RemoteWebDriver driver) {
         super(driver);
@@ -25,6 +26,10 @@ abstract public class MyListsPageObject extends MainPageObject {
 
     private static String getArticleXpathByTitle(String articleTitle) {
         return ARTICLE_BY_TITLE_TPL.replace("{ARTICLE_TITLE}", articleTitle);
+    }
+
+    private static String getRemoveButtonByTitle(String articleTitle) {
+        return REMOVE_FROM_SAVED_LIST_BUTTON_TPL.replace("{ARTICLE_TITLE}", articleTitle);
     }
     //endregion
 
@@ -48,9 +53,17 @@ abstract public class MyListsPageObject extends MainPageObject {
     public void swipeByArticleToDelete(String articleTitle) {
         this.waitForArticleToAppearByTitle(articleTitle);
         String articleTitleXpath = getArticleXpathByTitle(articleTitle);
-        this.swipeElementToLeft(articleTitleXpath, String.format("В списке статья '%s' не найдена.", articleTitle));
+        if (Platform.getInstance().isAndroid() || Platform.getInstance().isIOS()) {
+            this.swipeElementToLeft(articleTitleXpath, String.format("В списке статья '%s' не найдена.", articleTitle));
+        } else {
+            String removeLocator = getRemoveButtonByTitle(articleTitle);
+            this.waitForElementClickableAndClick(removeLocator, "Кнопка удаления статьи в списке сохраненных не найдена или недоступна для действий.", 10);
+        }
         if (Platform.getInstance().isIOS())
             this.clickElementToTheRightUpperCorner(articleTitleXpath, "В списке статья не найдена.");
+        if (Platform.getInstance().isMW()) {
+            driver.navigate().refresh();
+        }
         this.waitForArticleToDisappearByTitle(articleTitle);
     }
 

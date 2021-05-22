@@ -1,6 +1,5 @@
 package lib.ui.ios;
 
-import io.appium.java_client.AppiumDriver;
 import lib.ui.SearchPageObject;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
@@ -21,7 +20,7 @@ public class iOSSearchPageObject extends SearchPageObject {
         SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL =
                 "xpath://XCUIElementTypeCollectionView[@visible='true']" +
                         "//XCUIElementTypeCell//XCUIElementTypeStaticText[@value='{TITLE}'][1]";
-        SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL=
+        SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL =
                 "xpath://XCUIElementTypeCollectionView[@visible='true']//XCUIElementTypeCell" +
                         "[.//XCUIElementTypeStaticText[@value='{ARTICLE_TITLE}']]" +
                         "[.//XCUIElementTypeStaticText[contains(@value,'{ARTICLE_DESCRIPTION}')]]";

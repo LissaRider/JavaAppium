@@ -63,7 +63,6 @@ public class Platform {
         capabilities.setCapability("deviceName", "iPhone SE");
         capabilities.setCapability("platformVersion", "14.5");
         capabilities.setCapability("udid", "B8379464-F378-4117-94ED-3633C95672BF");
-//        capabilities.setCapability("app", new File("./apks/Wikipedia.app").getCanonicalPath());
         capabilities.setCapability("app", new File("src/test/resources/apks/Wikipedia.app").getCanonicalPath());
         return capabilities;
     }
@@ -81,7 +80,11 @@ public class Platform {
         return capabilities;
     }
 
-    private ChromeOptions getMWChromeOptions() {
+    private ChromeOptions getMWChromeOptions() throws IOException {
+
+        String driverPath = new File("src/test/resources/drivers/chromedriver.exe").getCanonicalPath();
+        System.setProperty("webdriver.chrome.driver", driverPath);
+
         Map<String, Object> deviceMetrics = new HashMap<>();
         deviceMetrics.put("width", 360);
         deviceMetrics.put("height", 640);
@@ -89,9 +92,10 @@ public class Platform {
 
         Map<String, Object> mobileEmulation = new HashMap<>();
         mobileEmulation.put("deviceMetrics", deviceMetrics);
-        mobileEmulation.put("userAgent", "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19");
+        mobileEmulation.put("userAgent", "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Mobile Safari/537.36");
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--window-size=340,640");
+        chromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
+        chromeOptions.addArguments("--window-size=340,780");
         return chromeOptions;
     }
 

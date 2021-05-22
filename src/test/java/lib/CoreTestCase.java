@@ -62,11 +62,11 @@ public class CoreTestCase extends TestCase {
         }
     }
 
-        private void skipWelcomePageForIOSApp () {
-            if (Platform.getInstance().isIOS()) {
-                AppiumDriver driver = (AppiumDriver) this.driver;
-                WelcomePageObject WelcomePageObject = new WelcomePageObject(driver);
-                WelcomePageObject.clickSkip();
-            }
+    private void skipWelcomePageForIOSApp() {
+        if (Platform.getInstance().isIOS()) {
+            AppiumDriver driver = (AppiumDriver) this.driver;
+            WelcomePageObject WelcomePageObject = new WelcomePageObject(driver);
+            WelcomePageObject.clickSkip();
         }
     }
+}

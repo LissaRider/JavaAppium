@@ -2,10 +2,7 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.Platform;
-import lib.ui.ArticlePageObject;
-import lib.ui.MyListsPageObject;
-import lib.ui.NavigationUI;
-import lib.ui.SearchPageObject;
+import lib.ui.*;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.MyListsPageObjectFactory;
 import lib.ui.factories.NavigationUIFactory;
@@ -14,6 +11,10 @@ import org.junit.Test;
 
 public class MyListsTests extends CoreTestCase {
 
+    private final String
+            login = "Lissa Rider",
+            password = "uX9HJvEv";
+
     @Test
     public void testSaveFirstArticleToMyList() {
 
@@ -21,13 +22,14 @@ public class MyListsTests extends CoreTestCase {
         ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
         NavigationUI navigation = NavigationUIFactory.get(driver);
         MyListsPageObject myListsPage = MyListsPageObjectFactory.get(driver);
+        AuthorizationPageObject auth = new AuthorizationPageObject(driver);
 
         final String searchLine = "Java";
         searchPage.searchByValue(searchLine);
 
         searchPage.waitForNotEmptySearchResults();
 
-        final String substring = "Object-oriented programming language";
+        final String substring = "bject-oriented programming language";
         searchPage.clickByArticleWithSubstring(substring);
 
         articlePage.waitForTitleElement();
@@ -37,15 +39,27 @@ public class MyListsTests extends CoreTestCase {
         if (Platform.getInstance().isAndroid()) {
             articlePage.addArticleToNewList(folderName);
             articlePage.closeArticle();
-        } else {
+        } else if (Platform.getInstance().isIOS()) {
             articlePage.addArticleToSavedList();
             articlePage.closeArticleAndReturnToMainPage();
+        } else {
+            articlePage.addArticleToSavedList();
+            auth.clickAuthButton();
+            auth.enterLoginData(login, password);
+            auth.submitForm();
+
+            articlePage.waitForTitleElement();
+
+            assertEquals("\n    Ошибка! После авторизации открылась другая страница.", articleTitle, articlePage.getArticleTitle());
+
+            navigation.openNavigation();
         }
 
         navigation.clickMyLists();
 
         if (Platform.getInstance().isAndroid()) myListsPage.openFolderByName(folderName);
-        else myListsPage.closeSyncSavedArticlesPopUp();
+
+        if (Platform.getInstance().isIOS()) myListsPage.closeSyncSavedArticlesPopUp();
 
         myListsPage.swipeByArticleToDelete(articleTitle);
     }

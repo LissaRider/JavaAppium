@@ -8,11 +8,13 @@ import lib.Platform;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class MainPageObject {
@@ -281,6 +283,26 @@ public class MainPageObject {
             return true;
         } catch (NoSuchElementException e) {
             return false;
+        }
+    }
+
+    public boolean isAnyElementPresent(String locator) {
+        return getAmountOfElements(locator) > 0;
+    }
+
+    public void tryClickElementWithFewAttempts(String locator, String errorMessage, int amountOfAttempts){
+        int currentAttempts=0;
+        boolean needMoreAttempts=true;
+        while(needMoreAttempts){
+            try {
+                this.waitForElementClickableAndClick(locator,errorMessage,1);
+                needMoreAttempts = false;
+            } catch (Exception e){
+                if(currentAttempts > amountOfAttempts){
+                    this.waitForElementClickableAndClick(locator,errorMessage,1);
+                }
+            }
+            ++currentAttempts;
         }
     }
 

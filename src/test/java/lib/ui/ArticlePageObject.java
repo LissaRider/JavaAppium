@@ -25,7 +25,8 @@ abstract public class ArticlePageObject extends MainPageObject {
             READING_LIST_BY_NAME_TPL,
             SAVE_FOR_LATER_BUTTON,
             TAP_TO_GO_BACK_BUTTON,
-            ADD_TO_WATCH_LIST_BUTTON;
+            ADD_TO_WATCHLIST_BUTTON,
+            REMOVE_FROM_WATCHLIST_BUTTON;
 
     public ArticlePageObject(RemoteWebDriver driver) {
         super(driver);
@@ -121,7 +122,19 @@ abstract public class ArticlePageObject extends MainPageObject {
      * Метод для добавления статьи в список сохраненных на iOS
      */
     public void addArticleToSavedList() {
-        this.waitForElementClickableAndClick(SAVE_FOR_LATER_BUTTON, "Кнопка 'Save for later' не найдена или недоступна для действий.", 5);
+        if (Platform.getInstance().isMW()) {
+            this.removeArticleFromSavedListIfItAdded();
+            this.waitForElementClickableAndClick(ADD_TO_WATCHLIST_BUTTON, "Кнопка добавления статьи в список сохраненных не найдена или недоступна для действий.", 10);
+        } else {
+            this.waitForElementClickableAndClick(SAVE_FOR_LATER_BUTTON, "Кнопка 'Save for later' не найдена или недоступна для действий.", 5);
+        }
+    }
+
+    public void removeArticleFromSavedListIfItAdded() {
+        if (this.isAnyElementPresent(REMOVE_FROM_WATCHLIST_BUTTON)) {
+            this.waitForElementClickableAndClick(REMOVE_FROM_WATCHLIST_BUTTON, "Кнопка удаления статьи из списка сохраненных не найдена или недоступна для действий.", 1);
+            this.waitForElementVisible(ADD_TO_WATCHLIST_BUTTON, "Кнопка добавления статьи в список сохраненных не найдена после удаления статьи из списка.");
+        }
     }
 
     /**
