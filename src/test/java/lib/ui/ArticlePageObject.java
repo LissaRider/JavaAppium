@@ -1,6 +1,5 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
 import lib.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -25,7 +24,8 @@ abstract public class ArticlePageObject extends MainPageObject {
             ADD_TO_LIST_INIT_FORM,
             READING_LIST_BY_NAME_TPL,
             SAVE_FOR_LATER_BUTTON,
-            TAP_TO_GO_BACK_BUTTON;
+            TAP_TO_GO_BACK_BUTTON,
+            ADD_TO_WATCH_LIST_BUTTON;
 
     public ArticlePageObject(RemoteWebDriver driver) {
         super(driver);
@@ -56,14 +56,24 @@ abstract public class ArticlePageObject extends MainPageObject {
 
     public String getArticleTitle() {
         WebElement titleElement = waitForTitleElement();
-        return Platform.getInstance().isAndroid() ? titleElement.getAttribute("text") : titleElement.getAttribute("name");
+        if (Platform.getInstance().isAndroid()) {
+            return titleElement.getAttribute("text");
+        } else if (Platform.getInstance().isAndroid()) {
+            return titleElement.getAttribute("name");
+        } else {
+            return titleElement.getText();
+        }
     }
 
     public void swipeToFooter() {
-        if (Platform.getInstance().isAndroid())
-            this.swipeUpToFindElement(ARTICLE_FOOTER_ELEMENT, "Конец статьи не найден.", 40);
-        else
-            this.swipeUpTillElementAppear(ARTICLE_FOOTER_ELEMENT, "Конец статьи не найден.", 150);
+        String errorMessage = "Конец статьи не найден.";
+        if (Platform.getInstance().isAndroid()) {
+            this.swipeUpToFindElement(ARTICLE_FOOTER_ELEMENT, errorMessage, 150);
+        } else if (Platform.getInstance().isIOS()) {
+            this.swipeUpTillElementAppear(ARTICLE_FOOTER_ELEMENT, errorMessage, 150);
+        } else {
+            this.scrollWebPageTillElementNotVisible(ARTICLE_FOOTER_ELEMENT, errorMessage, 40);
+        }
     }
 
     /**

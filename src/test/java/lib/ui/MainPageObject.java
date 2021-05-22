@@ -6,10 +6,7 @@ import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
 import lib.Platform;
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -61,6 +58,13 @@ public class MainPageObject {
     public WebElement waitForElementVisible(String locator, String errorMessage, long timeoutInSeconds) {
         By by = this.getLocatorByString(locator);
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(String.format("\n  Внимание! %s\n", errorMessage));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
+    }
+
+    public WebElement waitForElementVisible(String locator, String errorMessage) {
+        By by = this.getLocatorByString(locator);
+        WebDriverWait wait = new WebDriverWait(driver, 15);
         wait.withMessage(String.format("\n  Внимание! %s\n", errorMessage));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(by));
     }
@@ -143,6 +147,31 @@ public class MainPageObject {
         swipeUp(200);
     }
 
+    /**
+     * Метод для пролистывания страницы с помощью JavaScript на Mobile Web
+     */
+    public void scrollWebPageUp() {
+        if (Platform.getInstance().isMW()) {
+            JavascriptExecutor jsExecutor = driver;
+            jsExecutor.executeScript("window.scrollBy(0,250)");
+        } else {
+            System.out.printf("  Внимание! Метод scrollWebPageUp() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
+        }
+    }
+
+    /**
+     * Метод для пролистывания страницы до тех пор пока элемент не будет в поле зрения с помощью JavaScript на Mobile Web
+     */
+    public void scrollWebPageTillElementNotVisible(String locator, String errorMessage, int maxSwipes) {
+        int alreadySwiped = 0;
+        WebElement element = this.waitForElementVisible(locator, errorMessage);
+        while (!this.isElementLocatedOnTheScreen(locator)) {
+            scrollWebPageUp();
+            ++alreadySwiped;
+            if (alreadySwiped > maxSwipes) Assert.assertTrue(errorMessage, element.isDisplayed());
+        }
+    }
+
     public void swipeUpToFindElement(String locator, String errorMessage, int maxSwipes) {
         By by = this.getLocatorByString(locator);
         int alreadySwiped = 0;
@@ -156,11 +185,11 @@ public class MainPageObject {
         }
     }
 
-    public void swipeUpTillElementAppear(String locator, String error_message, int max_swipes) {
+    public void swipeUpTillElementAppear(String locator, String errorMessage, int maxSwipes) {
         int already_swiped = 0;
         while (!this.isElementLocatedOnTheScreen(locator)) {
-            if (already_swiped > max_swipes) {
-                Assert.assertTrue(error_message, this.isElementLocatedOnTheScreen(locator));
+            if (already_swiped > maxSwipes) {
+                Assert.assertTrue(errorMessage, this.isElementLocatedOnTheScreen(locator));
             }
             swipeUpQuick();
             ++already_swiped;
@@ -172,6 +201,11 @@ public class MainPageObject {
                 locator, String.format("Элемент с локатором '%s' не найден.\n", locator), 1)
                 .getLocation()
                 .getY();
+        if (Platform.getInstance().isMW()) {
+            JavascriptExecutor jsExecutor = driver;
+            Object jsResult = jsExecutor.executeScript("return window.pageYOffset");
+            elementLocationByY = Integer.parseInt(jsResult.toString());
+        }
         int screenSizeByY = driver.manage().window().getSize().getHeight();
         return elementLocationByY < screenSizeByY;
     }

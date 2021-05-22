@@ -33,7 +33,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     private static String getResultSearchElementWithTitle(String articleTitle) {
-        return SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL.replace("{TITLE}", articleTitle.replace("\n",""));
+        return SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL.replace("{TITLE}", articleTitle.replace("\n", ""));
     }
 
     private static String getArticleWithTitleAndDescription(String articleTitle, String articleDescription) {
