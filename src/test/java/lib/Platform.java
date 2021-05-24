@@ -63,6 +63,7 @@ public class Platform {
         capabilities.setCapability("deviceName", "iPhone SE");
         capabilities.setCapability("platformVersion", "14.5");
         capabilities.setCapability("udid", "B8379464-F378-4117-94ED-3633C95672BF");
+        capabilities.setCapability("orientation", "PORTRAIT");
         capabilities.setCapability("app", new File("src/test/resources/apks/Wikipedia.app").getCanonicalPath());
         return capabilities;
     }
@@ -74,6 +75,7 @@ public class Platform {
         capabilities.setCapability("platformVersion", "8.0");
         capabilities.setCapability("automationName", "Appium");
         capabilities.setCapability("appPackage", "org.wikipedia");
+        capabilities.setCapability("avd","and80");
         capabilities.setCapability("appActivity", ".main.MainActivity");
         capabilities.setCapability("orientation", "PORTRAIT");
         capabilities.setCapability("app", new File("src/test/resources/apks/org.wikipedia.apk").getCanonicalPath());
@@ -82,8 +84,13 @@ public class Platform {
 
     private ChromeOptions getMWChromeOptions() throws IOException {
 
-        String driverPath = new File("src/test/resources/drivers/chromedriver.exe").getCanonicalPath();
-        System.setProperty("webdriver.chrome.driver", driverPath);
+        String chromeBinary = System.getProperty("webdriver.chrome.driver");
+        if (chromeBinary == null || chromeBinary.equals("")) {
+            String os = System.getProperty("os.name").toLowerCase().substring(0, 3);
+            final String driverPath = new File("src/test/resources/drivers/chromedriver").getCanonicalPath();
+            chromeBinary = driverPath + (os.equals("win") ? ".exe" : "");
+            System.setProperty("webdriver.chrome.driver", chromeBinary);
+        }
 
         Map<String, Object> deviceMetrics = new HashMap<>();
         deviceMetrics.put("width", 360);

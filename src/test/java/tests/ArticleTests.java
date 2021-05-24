@@ -40,6 +40,8 @@ public class ArticleTests extends CoreTestCase {
         final String searchLine = "Java";
         searchPage.searchByValue(searchLine);
 
+        searchPage.waitForNotEmptySearchResults();
+
         final String substring = "bject-oriented programming language";
         searchPage.clickByArticleWithSubstring(substring);
 

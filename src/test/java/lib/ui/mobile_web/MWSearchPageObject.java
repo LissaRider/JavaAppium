@@ -6,7 +6,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public class MWSearchPageObject extends SearchPageObject {
 
     static {
-        MAIN_PAGE_SEARCH_INIT_ELEMENT = "css:button#searchIcon";
+        MAIN_PAGE_SEARCH_INIT_ELEMENT = "id:searchIcon";
         SEARCH_INPUT_FIELD = "css:form>input[type='search']";
         SEARCH_CANCEL_BUTTON = "css:.header-action>button.cancel";
         SEARCH_INPUT_CLEAR_BUTTON = "css:button.clear";

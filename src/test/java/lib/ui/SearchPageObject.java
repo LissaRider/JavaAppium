@@ -118,7 +118,15 @@ abstract public class SearchPageObject extends MainPageObject {
 
     public void clickByArticleWithSubstring(String substring) {
         String searchResultXpath = getResultSearchElementWithSubstring(substring);
-        this.waitForElementClickableAndClick(searchResultXpath, String.format("Текст '%s' не найден или элемент недоступен для действий.", substring), 10);
+        if (Platform.getInstance().isMW()) {
+            if (isAnyElementPresent(searchResultXpath)) {
+                this.waitForElementClickableAndClick(searchResultXpath, String.format("Текст '%s' не найден или элемент недоступен для действий.", substring), 10);
+            } else {
+                this.clickByArticleWithTitle(substring);
+            }
+        } else {
+            this.waitForElementClickableAndClick(searchResultXpath, String.format("Текст '%s' не найден или элемент недоступен для действий.", substring), 10);
+        }
     }
 
     public void clickByArticleWithTitle(String articleTitle) {

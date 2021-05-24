@@ -7,6 +7,7 @@ import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 public class CoreTestCase extends TestCase {
 
@@ -16,7 +17,6 @@ public class CoreTestCase extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         driver = Platform.getInstance().getDriver();
-        this.rotateScreenPortrait();
         this.skipWelcomePageForIOSApp();
         this.openWikiWebPageForMobileWeb();
     }
@@ -25,6 +25,7 @@ public class CoreTestCase extends TestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
         driver.quit();
+        closeEmulator();
     }
 
     protected void rotateScreenPortrait() {
@@ -67,6 +68,21 @@ public class CoreTestCase extends TestCase {
             AppiumDriver driver = (AppiumDriver) this.driver;
             WelcomePageObject WelcomePageObject = new WelcomePageObject(driver);
             WelcomePageObject.clickSkip();
+        }
+    }
+
+    /**
+     * Метод для закрытия всех запученных эмуляторов adb
+     */
+    public static void closeEmulator() {
+        System.out.println("Killing emulator...");
+        String[] aCommand = new String[] { "adb", "emu", "kill" };
+        try {
+            Process process = new ProcessBuilder(aCommand).start();
+            process.waitFor(1, TimeUnit.SECONDS);
+            System.out.println("Emulator closed successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

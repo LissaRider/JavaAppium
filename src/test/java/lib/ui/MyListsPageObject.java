@@ -1,7 +1,11 @@
 package lib.ui;
 
 import lib.Platform;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 abstract public class MyListsPageObject extends MainPageObject {
 
@@ -10,6 +14,7 @@ abstract public class MyListsPageObject extends MainPageObject {
             FOLDER_BY_NAME_TPL,
             ARTICLE_LIST,
             ARTICLE_LIST_ITEM,
+            ARTICLE_BY_TITLE,
             ARTICLE_BY_TITLE_TPL,
             SYNC_YOUR_SAVED_ARTICLES_POPUP,
             CLOSE_SYNC_POPUP_BUTTON,
@@ -40,6 +45,15 @@ abstract public class MyListsPageObject extends MainPageObject {
         waitForElementVisible(folderNameXpath, String.format("Заголовок папки '%s' не найден.", folderName), 15);
     }
 
+    public List getArticleTitleList(){
+        List<WebElement> webElements = this.waitForPresenceOfAllElements(ARTICLE_BY_TITLE, "Не найдено ни одного заголовка статьи.", 15);
+        List<String> titles = new ArrayList<>();
+        for (WebElement element: webElements) {
+            titles.add(element.getText());
+        }
+        return titles;
+    }
+
     public void waitForArticleToAppearByTitle(String articleTitle) {
         String articleTitleXpath = getArticleXpathByTitle(articleTitle);
         this.waitForElementPresent(articleTitleXpath, String.format("В списке статья '%s' не найдена.", articleTitle), 15);
@@ -47,7 +61,14 @@ abstract public class MyListsPageObject extends MainPageObject {
 
     public void waitForArticleToDisappearByTitle(String articleTitle) {
         String articleTitleXpath = getArticleXpathByTitle(articleTitle);
-        this.waitForElementNotPresent(articleTitleXpath, String.format("Статья '%s' не удалилась из списка.", articleTitle), 15);
+        if (Platform.getInstance().isMW()) {
+            long finish = System.currentTimeMillis() + 5000; // end time
+            while (isAnyElementPresent(articleTitleXpath) && (System.currentTimeMillis() < finish)) {
+                driver.navigate().refresh();
+            }
+        } else {
+            this.waitForElementNotPresent(articleTitleXpath, String.format("Статья '%s' не удалилась из списка.", articleTitle), 15);
+        }
     }
 
     public void swipeByArticleToDelete(String articleTitle) {
@@ -61,9 +82,6 @@ abstract public class MyListsPageObject extends MainPageObject {
         }
         if (Platform.getInstance().isIOS())
             this.clickElementToTheRightUpperCorner(articleTitleXpath, "В списке статья не найдена.");
-        if (Platform.getInstance().isMW()) {
-            driver.navigate().refresh();
-        }
         this.waitForArticleToDisappearByTitle(articleTitle);
     }
 

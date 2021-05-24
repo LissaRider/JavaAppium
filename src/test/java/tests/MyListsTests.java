@@ -9,6 +9,8 @@ import lib.ui.factories.NavigationUIFactory;
 import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
+import java.util.List;
+
 public class MyListsTests extends CoreTestCase {
 
     private final String
@@ -65,7 +67,7 @@ public class MyListsTests extends CoreTestCase {
     }
 
     /**
-     * Тестовый метод, где проверка осуществляется по заголовку статьи в iOS
+     * Тестовый метод, где проверка осуществляется по заголовку статьи
      */
     @Test
     public void testActionsWithArticlesInMyList() {
@@ -74,6 +76,7 @@ public class MyListsTests extends CoreTestCase {
         ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
         NavigationUI navigation = NavigationUIFactory.get(driver);
         MyListsPageObject myListsPage = MyListsPageObjectFactory.get(driver);
+        AuthorizationPageObject auth = new AuthorizationPageObject(driver);
 
         String searchLine;
         searchLine = "World of Tanks";
@@ -87,8 +90,20 @@ public class MyListsTests extends CoreTestCase {
         String articleAboutWotTitle = articlePage.getArticleTitle();
 
         final String folderName = "Games";
-        if (Platform.getInstance().isAndroid()) articlePage.addArticleToNewList(folderName);
-        else articlePage.addArticleToSavedList();
+        if (Platform.getInstance().isAndroid()) {
+            articlePage.addArticleToNewList(folderName);
+        } else if (Platform.getInstance().isIOS()) {
+            articlePage.addArticleToSavedList();
+        } else {
+            articlePage.addArticleToSavedList();
+            auth.clickAuthButton();
+            auth.enterLoginData(login, password);
+            auth.submitForm();
+
+            articlePage.waitForTitleElement();
+
+            assertEquals("\n    Ошибка! После авторизации открылась другая страница.", articleAboutWotTitle, articlePage.getArticleTitle());
+        }
 
         searchLine = "World of Warcraft";
         searchPage.searchByValue(searchLine);
@@ -103,32 +118,53 @@ public class MyListsTests extends CoreTestCase {
         if (Platform.getInstance().isAndroid()) {
             articlePage.addArticleToExistingList(folderName);
             articlePage.closeArticle();
-        } else {
+        } else if (Platform.getInstance().isIOS()) {
             articlePage.addArticleToSavedList();
             articlePage.closeArticleAndReturnToMainPage();
+        } else {
+            articlePage.addArticleToSavedList();
+            navigation.openNavigation();
         }
 
         navigation.clickMyLists();
 
         if (Platform.getInstance().isAndroid()) myListsPage.openFolderByName(folderName);
-        else myListsPage.closeSyncSavedArticlesPopUp();
+
+        if (Platform.getInstance().isIOS()) myListsPage.closeSyncSavedArticlesPopUp();
 
         int amountOfArticlesBefore = myListsPage.getAmountOfAddedArticles();
 
-        assertEquals(
-                String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
-                amountOfArticlesBefore,
-                2);
+        final String message = Platform.getInstance().isAndroid()
+                ? String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName)
+                : "\n  Ошибка! В списке сохраненных статей отображается некорректное количество статей.\n";
+
+        if (Platform.getInstance().isMW()) {
+            List articleTitleListBefore = myListsPage.getArticleTitleList();
+            assertTrue(
+                    String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutWotTitle),
+                    articleTitleListBefore.contains(articleAboutWotTitle));
+            assertTrue(
+                    String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutWowTitle),
+                    articleTitleListBefore.contains(articleAboutWowTitle));
+        } else {
+            assertEquals(message, 2, amountOfArticlesBefore);
+        }
 
         myListsPage.swipeByArticleToDelete(articleAboutWowTitle);
 
         int amountOfArticlesAfter = myListsPage.getAmountOfAddedArticles();
 
-        assertEquals(
-                String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
-                amountOfArticlesBefore - 1,
-                amountOfArticlesAfter
-        );
+        assertEquals(message, amountOfArticlesBefore - 1, amountOfArticlesAfter);
+
+        if (Platform.getInstance().isMW()) {
+            List articleTitleListAfter = myListsPage.getArticleTitleList();
+            assertTrue(
+                    String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutWotTitle),
+                    articleTitleListAfter.contains(articleAboutWotTitle));
+            assertFalse(
+                    String.format("\n  Ошибка! В списке сохраненных статей присутствует статья с заголовком '%s'.", articleAboutWowTitle),
+                    articleTitleListAfter.contains(articleAboutWowTitle));
+        }
 
         myListsPage.clickByArticleWithTitle(articleAboutWotTitle);
 
@@ -142,7 +178,7 @@ public class MyListsTests extends CoreTestCase {
     }
 
     /**
-     * Тестовый метод, где проверка осуществляется по тексту баннера на странице статьи в iOS
+     * Тестовый метод, где проверка осуществляется по тексту баннера на странице статьи
      */
     @Test
     public void testArticleDeletionFromReadingList() {
@@ -151,6 +187,7 @@ public class MyListsTests extends CoreTestCase {
         ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
         NavigationUI navigation = NavigationUIFactory.get(driver);
         MyListsPageObject myListsPage = MyListsPageObjectFactory.get(driver);
+        AuthorizationPageObject auth = new AuthorizationPageObject(driver);
 
         String searchLine;
         searchLine = "TeamCity";
@@ -167,10 +204,18 @@ public class MyListsTests extends CoreTestCase {
             articlePage.waitForTitleElement();
             articleAboutTeamCityTitle = articlePage.getArticleTitle();
             articlePage.addArticleToNewList(folderName);
-        } else {
+        } else if (Platform.getInstance().isIOS()) {
             articlePage.waitForBannerElement(substringForTeamCity);
             articleAboutTeamCityTitle = substringForTeamCity;
             articlePage.addArticleToSavedList();
+        } else {
+            articlePage.addArticleToSavedList();
+            auth.clickAuthButton();
+            auth.enterLoginData(login, password);
+            auth.submitForm();
+
+            articlePage.waitForBannerElement(substringForTeamCity);
+            articleAboutTeamCityTitle = substringForTeamCity;
         }
 
         searchLine = "Jenkins";
@@ -187,34 +232,57 @@ public class MyListsTests extends CoreTestCase {
             articleAboutJenkinsTitle = articlePage.getArticleTitle();
             articlePage.addArticleToExistingList(folderName);
             articlePage.closeArticle();
-        } else {
+        } else if (Platform.getInstance().isIOS()) {
             articlePage.waitForBannerElement(substringForJenkins);
             articleAboutJenkinsTitle = substringForJenkins;
             articlePage.addArticleToSavedList();
             articlePage.closeArticleAndReturnToMainPage();
+        } else {
+            articlePage.waitForBannerElement(substringForJenkins);
+            articleAboutJenkinsTitle = substringForJenkins;
+            articlePage.addArticleToSavedList();
+            navigation.openNavigation();
         }
 
         navigation.clickMyLists();
 
         if (Platform.getInstance().isAndroid()) myListsPage.openFolderByName(folderName);
-        else myListsPage.closeSyncSavedArticlesPopUp();
+
+        if (Platform.getInstance().isIOS()) myListsPage.closeSyncSavedArticlesPopUp();
 
         int amountOfArticlesBefore = myListsPage.getAmountOfAddedArticles();
 
-        assertEquals(
-                String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
-                amountOfArticlesBefore,
-                2);
+        final String message = Platform.getInstance().isAndroid()
+                ? String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName)
+                : "\n  Ошибка! В списке сохраненных статей отображается некорректное количество статей.\n";
+
+        if (Platform.getInstance().isMW()) {
+            List articleTitleListBefore = myListsPage.getArticleTitleList();
+            assertTrue(
+                    String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutJenkinsTitle),
+                    articleTitleListBefore.contains(articleAboutJenkinsTitle));
+            assertTrue(
+                    String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutTeamCityTitle),
+                    articleTitleListBefore.contains(articleAboutTeamCityTitle));
+        } else {
+            assertEquals(message, 2, amountOfArticlesBefore);
+        }
 
         myListsPage.swipeByArticleToDelete(articleAboutJenkinsTitle);
 
         int amountOfArticlesAfter = myListsPage.getAmountOfAddedArticles();
 
-        assertEquals(
-                String.format("\n  Ошибка! В папке '%s' отображается некорректное количество статей.\n", folderName),
-                amountOfArticlesBefore - 1,
-                amountOfArticlesAfter
-        );
+        assertEquals(message, amountOfArticlesBefore - 1, amountOfArticlesAfter);
+
+        if (Platform.getInstance().isMW()) {
+            List articleTitleListAfter = myListsPage.getArticleTitleList();
+            assertFalse(
+                    String.format("\n  Ошибка! В списке сохраненных статей присутствует статья с заголовком '%s'.", articleAboutJenkinsTitle),
+                    articleTitleListAfter.contains(articleAboutJenkinsTitle));
+            assertTrue(
+                    String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutTeamCityTitle),
+                    articleTitleListAfter.contains(articleAboutTeamCityTitle));
+        }
 
         myListsPage.clickByArticleWithTitle(articleAboutTeamCityTitle);
 
