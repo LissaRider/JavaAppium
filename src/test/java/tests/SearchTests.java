@@ -4,6 +4,7 @@ import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.WebElement;
 
@@ -49,7 +50,7 @@ public class SearchTests extends CoreTestCase {
 
         int amountOfSearchResults = searchPage.getAmountOfFoundArticles();
 
-        assertTrue(
+        Assert.assertTrue(
                 String.format("\n  Ошибка! Найдено меньше результатов, чем ожидалось: %d.\n", amountOfSearchResults),
                 amountOfSearchResults > 0);
     }
@@ -112,7 +113,7 @@ public class SearchTests extends CoreTestCase {
                 articleTitle = titleElement.getAttribute("textContent").toLowerCase();
             }
 
-            assertTrue(
+            Assert.assertTrue(
                     String.format("\n  Ошибка! В заголовке найденной статьи с индексом [%d] отсутствует заданное для поиска значение '%s'.\n", i, searchValue),
                     articleTitle.contains(searchValue.toLowerCase()));
         }
@@ -133,7 +134,7 @@ public class SearchTests extends CoreTestCase {
 
         int amountOfSearchResults = searchPage.getAmountOfFoundArticles();
 
-        assertTrue(
+        Assert.assertTrue(
                 String.format("\n  Ошибка! Найдено меньше статей, чем ожидалось: %d.\n", amountOfSearchResults),
                 amountOfSearchResults >= 3);
 

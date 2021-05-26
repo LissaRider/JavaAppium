@@ -64,6 +64,20 @@ appium & (запуск appium)
 
 kill $(lsof -t -i :4723) (остановка appium на Mac)
 
+#### Установка Scoop на Windows (PowerShell)
+
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+
+iwr -useb get.scoop.sh | iex
+
+scoop (для проверки работы)
+
+#### Установка Allure на Windows (cmd)
+
+scoop install allure
+
+allure --version (для проверки работы)
+
 ## Лицензия
 
 Copyright © 2021 Lissa Rider

@@ -7,6 +7,7 @@ import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.MyListsPageObjectFactory;
 import lib.ui.factories.NavigationUIFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
@@ -52,7 +53,7 @@ public class MyListsTests extends CoreTestCase {
 
             articlePage.waitForTitleElement();
 
-            assertEquals("\n    Ошибка! После авторизации открылась другая страница.", articleTitle, articlePage.getArticleTitle());
+            Assert.assertEquals("\n    Ошибка! После авторизации открылась другая страница.", articleTitle, articlePage.getArticleTitle());
 
             navigation.openNavigation();
         }
@@ -102,7 +103,7 @@ public class MyListsTests extends CoreTestCase {
 
             articlePage.waitForTitleElement();
 
-            assertEquals("\n    Ошибка! После авторизации открылась другая страница.", articleAboutWotTitle, articlePage.getArticleTitle());
+            Assert.assertEquals("\n    Ошибка! После авторизации открылась другая страница.", articleAboutWotTitle, articlePage.getArticleTitle());
         }
 
         searchLine = "World of Warcraft";
@@ -140,28 +141,28 @@ public class MyListsTests extends CoreTestCase {
 
         if (Platform.getInstance().isMW()) {
             List articleTitleListBefore = myListsPage.getArticleTitleList();
-            assertTrue(
+            Assert.assertTrue(
                     String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutWotTitle),
                     articleTitleListBefore.contains(articleAboutWotTitle));
-            assertTrue(
+            Assert.assertTrue(
                     String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutWowTitle),
                     articleTitleListBefore.contains(articleAboutWowTitle));
         } else {
-            assertEquals(message, 2, amountOfArticlesBefore);
+            Assert.assertEquals(message, 2, amountOfArticlesBefore);
         }
 
         myListsPage.swipeByArticleToDelete(articleAboutWowTitle);
 
         int amountOfArticlesAfter = myListsPage.getAmountOfAddedArticles();
 
-        assertEquals(message, amountOfArticlesBefore - 1, amountOfArticlesAfter);
+        Assert.assertEquals(message, amountOfArticlesBefore - 1, amountOfArticlesAfter);
 
         if (Platform.getInstance().isMW()) {
             List articleTitleListAfter = myListsPage.getArticleTitleList();
-            assertTrue(
+            Assert.assertTrue(
                     String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutWotTitle),
                     articleTitleListAfter.contains(articleAboutWotTitle));
-            assertFalse(
+            Assert.assertFalse(
                     String.format("\n  Ошибка! В списке сохраненных статей присутствует статья с заголовком '%s'.", articleAboutWowTitle),
                     articleTitleListAfter.contains(articleAboutWowTitle));
         }
@@ -171,7 +172,7 @@ public class MyListsTests extends CoreTestCase {
         articlePage.waitForTitleElement();
         String actualTitle = articlePage.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "\n  Ошибка! Отображается некорректное название статьи.\n",
                 articleAboutWotTitle,
                 actualTitle);
@@ -258,28 +259,28 @@ public class MyListsTests extends CoreTestCase {
 
         if (Platform.getInstance().isMW()) {
             List articleTitleListBefore = myListsPage.getArticleTitleList();
-            assertTrue(
+            Assert.assertTrue(
                     String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutJenkinsTitle),
                     articleTitleListBefore.contains(articleAboutJenkinsTitle));
-            assertTrue(
+            Assert.assertTrue(
                     String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutTeamCityTitle),
                     articleTitleListBefore.contains(articleAboutTeamCityTitle));
         } else {
-            assertEquals(message, 2, amountOfArticlesBefore);
+            Assert.assertEquals(message, 2, amountOfArticlesBefore);
         }
 
         myListsPage.swipeByArticleToDelete(articleAboutJenkinsTitle);
 
         int amountOfArticlesAfter = myListsPage.getAmountOfAddedArticles();
 
-        assertEquals(message, amountOfArticlesBefore - 1, amountOfArticlesAfter);
+        Assert.assertEquals(message, amountOfArticlesBefore - 1, amountOfArticlesAfter);
 
         if (Platform.getInstance().isMW()) {
             List articleTitleListAfter = myListsPage.getArticleTitleList();
-            assertFalse(
+            Assert.assertFalse(
                     String.format("\n  Ошибка! В списке сохраненных статей присутствует статья с заголовком '%s'.", articleAboutJenkinsTitle),
                     articleTitleListAfter.contains(articleAboutJenkinsTitle));
-            assertTrue(
+            Assert.assertTrue(
                     String.format("\n  Ошибка! В списке сохраненных статей отсутствует статья с заголовком '%s'.", articleAboutTeamCityTitle),
                     articleTitleListAfter.contains(articleAboutTeamCityTitle));
         }
@@ -289,7 +290,7 @@ public class MyListsTests extends CoreTestCase {
         if (Platform.getInstance().isAndroid()) {
             articlePage.waitForTitleElement();
             String actualTitle = articlePage.getArticleTitle();
-            assertEquals(
+            Assert.assertEquals(
                     "\n  Ошибка! Отображается некорректное название статьи.\n",
                     articleAboutTeamCityTitle,
                     actualTitle);

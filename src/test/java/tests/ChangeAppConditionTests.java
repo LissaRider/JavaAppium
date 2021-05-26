@@ -6,6 +6,7 @@ import lib.ui.ArticlePageObject;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ChangeAppConditionTests extends CoreTestCase {
@@ -34,7 +35,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         articlePage.waitForTitleElement();
         String titleAfterRotation = articlePage.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
                 titleBeforeRotation,
                 titleAfterRotation
@@ -45,7 +46,7 @@ public class ChangeAppConditionTests extends CoreTestCase {
         articlePage.waitForTitleElement();
         String titleAfterSecondRotation = articlePage.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "\n  Ошибка! Название статьи изменилось после изменения ориентации экрана.\n",
                 titleBeforeRotation,
                 titleAfterSecondRotation

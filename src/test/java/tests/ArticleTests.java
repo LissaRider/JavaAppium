@@ -5,6 +5,7 @@ import lib.ui.ArticlePageObject;
 import lib.ui.SearchPageObject;
 import lib.ui.factories.ArticlePageObjectFactory;
 import lib.ui.factories.SearchPageObjectFactory;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ArticleTests extends CoreTestCase {
@@ -24,7 +25,7 @@ public class ArticleTests extends CoreTestCase {
 
         String articleTitle = articlePage.getArticleTitle();
 
-        assertEquals(
+        Assert.assertEquals(
                 "\n  Ошибка! Отображается некорректный заголовок статьи.\n",
                 "Java (programming language)",
                 articleTitle
