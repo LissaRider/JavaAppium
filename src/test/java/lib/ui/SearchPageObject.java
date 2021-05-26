@@ -1,5 +1,6 @@
 package lib.ui;
 
+import io.qameta.allure.Step;
 import lib.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -62,6 +63,7 @@ abstract public class SearchPageObject extends MainPageObject {
         );
     }
 
+    @Step("Initializing the search field")
     public void initSearchInput() {
         String searchWikiMessageError = "элемент 'Search Wikipedia' не найден или недоступен для действий";
         if (this.isElementPresent(MAIN_PAGE_SEARCH_INIT_ELEMENT))
@@ -71,14 +73,17 @@ abstract public class SearchPageObject extends MainPageObject {
         this.waitForElementPresent(SEARCH_INPUT_FIELD, "Поле ввода текста для поиска не найдено.");
     }
 
+    @Step("Waiting for button to cancel search result")
     public void waitForCancelButtonToAppear() {
         this.waitForElementPresent(SEARCH_CANCEL_BUTTON, "Кнопка отмены поиска не найдена.");
     }
 
+    @Step("Waiting for search cancel button to disappear")
     public void waitForCancelButtonToDisappear() {
         this.waitForElementNotPresent(SEARCH_CANCEL_BUTTON, "Кнопка отмены поиска все ещё отображается.", 5);
     }
 
+    @Step("Clearing search input")
     public void clearSearchInput() {
         if (Platform.getInstance().isMW())
             this.waitForElementClickableAndClick(SEARCH_INPUT_CLEAR_BUTTON, "Кнопка очистки поля ввода текста для поиска не найдено.", 5);
@@ -95,14 +100,17 @@ abstract public class SearchPageObject extends MainPageObject {
         return this.waitForPresenceOfAllElements(SEARCH_RESULT_LIST_ITEM_TITLE, "По заданному запросу ничего не найдено.", 15);
     }
 
+    @Step("Clicking button to cancel search result")
     public void clickCancelButton() {
         this.waitForElementClickableAndClick(SEARCH_CANCEL_BUTTON, "Кнопка отмены поиска не найдена или недоступна для действий.", 5);
     }
 
+    @Step("Typing text to the search line")
     public void typeSearchLine(String substring) {
         this.waitForElementAndSendKeys(SEARCH_INPUT_FIELD, substring, "Поле ввода текста для поиска не найдено.", 5);
     }
 
+    @Step("Waiting for search result")
     public WebElement waitForSearchResult(String substring) {
         String searchResultXpath = getResultSearchElementWithSubstring(substring);
         return this.waitForElementPresent(searchResultXpath, String.format("Текст '%s' не найден.", substring), 15);
@@ -116,6 +124,7 @@ abstract public class SearchPageObject extends MainPageObject {
         this.waitForNumberOfResultsMoreThan(0);
     }
 
+    @Step("Waiting for search result and select an article by substring in article title")
     public void clickByArticleWithSubstring(String substring) {
         String searchResultXpath = getResultSearchElementWithSubstring(substring);
         if (Platform.getInstance().isMW()) {
@@ -134,15 +143,18 @@ abstract public class SearchPageObject extends MainPageObject {
         this.waitForElementClickableAndClick(articleTitleXpath, String.format("Статья с заголовком '%s' не найдена или недоступна для действий.", articleTitle), 5);
     }
 
+    @Step("Getting amount of found articles")
     public int getAmountOfFoundArticles() {
         this.waitForElementVisible(SEARCH_RESULT_LIST_ITEM, "Ничего не найдено по заданному запросу.", 15);
         return getAmountOfElements(SEARCH_RESULT_LIST_ITEM);
     }
 
+    @Step("Waiting for empty result label")
     public void waitForEmptyResultsLabel() {
         this.waitForElementPresent(SEARCH_EMPTY_RESULT_ELEMENT, "Найдены результаты по запросу поиска.", 15);
     }
 
+    @Step("Making sure there are no results fo the search")
     public void assertThereIsNoResultOfSearch() {
         this.assertElementNotPresent(SEARCH_RESULT_LIST_ITEM, "Найдены результаты по запросу поиска.");
     }
