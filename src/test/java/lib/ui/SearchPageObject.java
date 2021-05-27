@@ -105,7 +105,7 @@ abstract public class SearchPageObject extends MainPageObject {
         this.waitForElementClickableAndClick(SEARCH_CANCEL_BUTTON, "Кнопка отмены поиска не найдена или недоступна для действий.", 5);
     }
 
-    @Step("Typing text to the search line")
+    @Step("Typing '{substring}' to the search line")
     public void typeSearchLine(String substring) {
         this.waitForElementAndSendKeys(SEARCH_INPUT_FIELD, substring, "Поле ввода текста для поиска не найдено.", 5);
     }

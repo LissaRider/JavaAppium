@@ -1,5 +1,6 @@
 package lib.ui;
 
+import io.qameta.allure.Step;
 import lib.Platform;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -46,15 +47,18 @@ abstract public class ArticlePageObject extends MainPageObject {
     }
     //endregion
 
+    @Step("Waiting for title on the article page")
     public WebElement waitForTitleElement() {
         return this.waitForElementPresent(ARTICLE_TITLE, "Заголовок статьи не найден.", 15);
     }
 
+    @Step("Waiting for banner on the article page")
     public WebElement waitForBannerElement(String substring) {
         String bannerBySubstringXpath = getBannerBySubstring(substring);
         return this.waitForElementVisible(bannerBySubstringXpath, String.format("На странице баннер с текстом '%s' не найден.", substring), 15);
     }
 
+    @Step("Get article title")
     public String getArticleTitle() {
         WebElement titleElement = waitForTitleElement();
         if (Platform.getInstance().isAndroid()) {
@@ -66,6 +70,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         }
     }
 
+    @Step("Swiping to footer on article page")
     public void swipeToFooter() {
         String errorMessage = "Конец статьи не найден.";
         if (Platform.getInstance().isAndroid()) {
@@ -80,6 +85,7 @@ abstract public class ArticlePageObject extends MainPageObject {
     /**
      * Метод для инициализации добавления статьи в список на Android
      */
+    @Step("Initializing adding the article to my list")
     public void selectAddToReadingListOption() {
         this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице верхняя панель инструментов не найдена.", 15);
         this.waitForElementClickableAndClick(OPTIONS_BUTTON, "Кнопка открытия меню действий со статьей не найдена или недоступна для действий.", 5);
@@ -89,10 +95,11 @@ abstract public class ArticlePageObject extends MainPageObject {
     }
 
     /**
-     * Метод для создани списка и добавления статьи в него на Android
+     * Метод для создания списка и добавления статьи в него на Android
      *
      * @param folderName -существующий список статей
      */
+    @Step("Creating a new list and adding the article to it")
     public void addArticleToNewList(String folderName) {
         selectAddToReadingListOption();
         this.waitForElementVisible(ADD_TO_LIST_INIT_FORM, "Форма добавления статьи в папку не найдена.", 15);
@@ -111,6 +118,7 @@ abstract public class ArticlePageObject extends MainPageObject {
      *
      * @param folderName -существующий список статей
      */
+    @Step("Adding the article to existing list")
     public void addArticleToExistingList(String folderName) {
         selectAddToReadingListOption();
         this.waitForElementVisible(ADD_TO_LIST_INIT_FORM, "Форма добавления статьи в папку не найдена.", 15);
@@ -121,6 +129,7 @@ abstract public class ArticlePageObject extends MainPageObject {
     /**
      * Метод для добавления статьи в список сохраненных на iOS
      */
+    @Step("Adding the article to my saved articles")
     public void addArticleToSavedList() {
         if (Platform.getInstance().isMW()) {
             this.removeArticleFromSavedListIfItAdded();
@@ -130,6 +139,7 @@ abstract public class ArticlePageObject extends MainPageObject {
         }
     }
 
+    @Step("Removing the article from saved if it has been added")
     public void removeArticleFromSavedListIfItAdded() {
         if (this.isAnyElementPresent(REMOVE_FROM_WATCHLIST_BUTTON)) {
             this.waitForElementClickableAndClick(REMOVE_FROM_WATCHLIST_BUTTON, "Кнопка удаления статьи из списка сохраненных не найдена или недоступна для действий.", 1);
@@ -140,11 +150,13 @@ abstract public class ArticlePageObject extends MainPageObject {
     /**
      * Метод для закрытия страницы и автоматического перехода на главную страицу на Android
      */
+    @Step("Closing the article")
     public void closeArticle() {
         this.waitForElementVisible(ARTICLE_TOP_TOOLBAR, "На странице верхняя панель инструментов не найдена.", 15);
         this.waitForElementAndClick(CLOSE_ARTICLE_BUTTON, "Кнопка закрытия статьи не найдена или недоступна для действий.", 10);
     }
 
+    @Step("Asserting is the article title present")
     public void assertIsArticleTitlePresent() {
         this.assertElementPresent(ARTICLE_TITLE, "Заголовок статьи не найден.");
     }
@@ -152,6 +164,7 @@ abstract public class ArticlePageObject extends MainPageObject {
     /**
      * Метод для закрытия страницы и возврата на главную страницу на iOS
      */
+    @Step("Closing the article and returning back to the main page")
     public void closeArticleAndReturnToMainPage() {
         this.waitForElementClickableAndClick(TAP_TO_GO_BACK_BUTTON, "Кнопка возврата на главную страницу не найдена или недоступна для действий.", 5);
     }
