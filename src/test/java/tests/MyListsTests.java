@@ -1,5 +1,7 @@
 package tests;
 
+import io.qameta.allure.*;
+import io.qameta.allure.junit4.DisplayName;
 import lib.CoreTestCase;
 import lib.Platform;
 import lib.ui.*;
@@ -12,6 +14,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+@Epic("Tests for my lists")
 public class MyListsTests extends CoreTestCase {
 
     private final String
@@ -19,6 +22,11 @@ public class MyListsTests extends CoreTestCase {
             password = "uX9HJvEv";
 
     @Test
+    @Features(value = {@Feature(value = "Search"), @Feature(value = "Article"),  @Feature(value = "MyLists")})
+    @DisplayName("Save the first found article to my new list")
+    @Description("Add the first found article to the new reading list and then remove it from the list")
+    @Step("Starting test 'testSaveFirstArticleToMyList'")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testSaveFirstArticleToMyList() {
 
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
@@ -71,6 +79,11 @@ public class MyListsTests extends CoreTestCase {
      * Тестовый метод, где проверка осуществляется по заголовку статьи
      */
     @Test
+    @Features(value = {@Feature(value = "Search"), @Feature(value = "Article"),  @Feature(value = "MyLists")})
+    @DisplayName("Check actions with articles in the reading list")
+    @Description("Add two articles to the reading list and then check remove one article from two saved ones (by title text)")
+    @Step("Starting test 'testActionsWithArticlesInMyList'")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testActionsWithArticlesInMyList() {
 
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
@@ -182,6 +195,11 @@ public class MyListsTests extends CoreTestCase {
      * Тестовый метод, где проверка осуществляется по тексту баннера на странице статьи
      */
     @Test
+    @Features(value = {@Feature(value = "Search"), @Feature(value = "Article"),  @Feature(value = "MyLists")})
+    @DisplayName("Delete one of two articles from the reading list")
+    @Description("Add two articles to the reading list and then check remove one article from two saved ones (by banner text)")
+    @Step("Starting test 'testArticleDeletionFromReadingList'")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testArticleDeletionFromReadingList() {
 
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);

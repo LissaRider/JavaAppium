@@ -10,7 +10,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Properties;
 
@@ -72,7 +71,7 @@ public class CoreTestCase {
         }
     }
 
-    @Step("Skip welcome page screen For iOS")
+    @Step("Skip welcome page screen for iOS")
     private void skipWelcomePageForIOSApp() {
         if (Platform.getInstance().isIOS()) {
             AppiumDriver driver = (AppiumDriver) this.driver;

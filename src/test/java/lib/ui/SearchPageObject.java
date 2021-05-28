@@ -29,14 +29,17 @@ abstract public class SearchPageObject extends MainPageObject {
     }
 
     //region TEMPLATES METHODS
+    @Step("Get the result search by substring '{substring}'")
     private static String getResultSearchElementWithSubstring(String substring) {
         return SEARCH_RESULT_BY_LIST_ITEM_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
 
+    @Step("Get the result search by title '{articleTitle}'")
     private static String getResultSearchElementWithTitle(String articleTitle) {
         return SEARCH_RESULT_BY_LIST_ITEM_TITLE_TPL.replace("{TITLE}", articleTitle.replace("\n", ""));
     }
 
+    @Step("Get the found article by '{articleTitle}' and '{articleDescription}'")
     private static String getArticleWithTitleAndDescription(String articleTitle, String articleDescription) {
         return SEARCH_RESULT_BY_LIST_ITEM_TITLE_AND_DESCRIPTION_TPL
                 .replace("{ARTICLE_TITLE}", articleTitle)
@@ -44,6 +47,7 @@ abstract public class SearchPageObject extends MainPageObject {
     }
     //endregion
 
+    @Step("Waiting for the article with title '{title}' and '{description}' to appear")
     public void waitForElementByTitleAndDescription(String title, String description) {
         String articleWithTitleAndDescriptionXpath = "";
         if (description.contains("|")) {
@@ -96,6 +100,7 @@ abstract public class SearchPageObject extends MainPageObject {
             this.waitForElementNotPresent(SEARCH_RESULT_LIST, errorMessage, 15);
     }
 
+    @Step("Get the search results list")
     public List<WebElement> getSearchResultsList() {
         return this.waitForPresenceOfAllElements(SEARCH_RESULT_LIST_ITEM_TITLE, "По заданному запросу ничего не найдено.", 15);
     }
@@ -110,16 +115,18 @@ abstract public class SearchPageObject extends MainPageObject {
         this.waitForElementAndSendKeys(SEARCH_INPUT_FIELD, substring, "Поле ввода текста для поиска не найдено.", 5);
     }
 
-    @Step("Waiting for search result")
+    @Step("Waiting for search result with substring '{substring}'")
     public WebElement waitForSearchResult(String substring) {
         String searchResultXpath = getResultSearchElementWithSubstring(substring);
         return this.waitForElementPresent(searchResultXpath, String.format("Текст '%s' не найден.", substring), 15);
     }
 
+    @Step("Waiting for amount of found results more than '{resultsCount}'")
     public void waitForNumberOfResultsMoreThan(int resultsCount) {
         this.waitForNumberOfElementsToBeMoreThan(SEARCH_RESULT_LIST_ITEM, resultsCount, String.format("Количество найденных результатов меньше ожидаемого: %d.", resultsCount), 15);
     }
 
+    @Step("Waiting for search result and select an article by substring in article title")
     public void waitForNotEmptySearchResults() {
         this.waitForNumberOfResultsMoreThan(0);
     }
@@ -138,12 +145,13 @@ abstract public class SearchPageObject extends MainPageObject {
         }
     }
 
+    @Step("Clicking on the found article with the title '{articleTitle}'")
     public void clickByArticleWithTitle(String articleTitle) {
         String articleTitleXpath = getResultSearchElementWithTitle(articleTitle);
         this.waitForElementClickableAndClick(articleTitleXpath, String.format("Статья с заголовком '%s' не найдена или недоступна для действий.", articleTitle), 5);
     }
 
-    @Step("Getting amount of found articles")
+    @Step("Get amount of found articles")
     public int getAmountOfFoundArticles() {
         this.waitForElementVisible(SEARCH_RESULT_LIST_ITEM, "Ничего не найдено по заданному запросу.", 15);
         return getAmountOfElements(SEARCH_RESULT_LIST_ITEM);
@@ -159,6 +167,7 @@ abstract public class SearchPageObject extends MainPageObject {
         this.assertElementNotPresent(SEARCH_RESULT_LIST_ITEM, "Найдены результаты по запросу поиска.");
     }
 
+    @Step("Asserting that the search placeholder has text '{placeholder}'")
     public void assertSearchPlaceholderHasText(String placeholder) {
         String errorMessage = "Поле ввода для поиска статьи содержит некорректный текст.";
         if (Platform.getInstance().isMW())
@@ -167,6 +176,7 @@ abstract public class SearchPageObject extends MainPageObject {
             this.assertElementHasText(SEARCH_INPUT_FIELD, placeholder, errorMessage);
     }
 
+    @Step("Searching for '{searchLine}'")
     public void searchByValue(String searchLine) {
         initSearchInput();
         typeSearchLine(searchLine);

@@ -17,8 +17,8 @@ public class ArticleTests extends CoreTestCase {
     @Features(value = {@Feature(value = "Search"), @Feature(value = "Article")})
     @DisplayName("Compare article title with expected one")
     @Description("We open 'Java Object-oriented programming language' article and make sure the title is expected")
-    @Step("Starting test testCompareArticleTitle")
-    @Severity(value =SeverityLevel.BLOCKER)
+    @Step("Starting test 'testCompareArticleTitle'")
+    @Severity(value = SeverityLevel.BLOCKER)
     public void testCompareArticleTitle() {
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
         ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
@@ -46,7 +46,7 @@ public class ArticleTests extends CoreTestCase {
     @Features(value = {@Feature(value = "Search"), @Feature(value = "Article")})
     @DisplayName("Swipe article to the footer")
     @Description("We open an article and swipe it to the footer")
-    @Step("Starting test testSwipeArticle")
+    @Step("Starting test 'testSwipeArticle'")
     @Severity(value = SeverityLevel.MINOR)
     public void testSwipeArticle() {
 
@@ -67,6 +67,11 @@ public class ArticleTests extends CoreTestCase {
     }
 
     @Test
+    @Features(value = {@Feature(value = "Search"), @Feature(value = "Article")})
+    @DisplayName("Check is the article title present on the page")
+    @Description("We open an article and verify the article title presence on the page")
+    @Step("Starting test 'testArticleTitlePresence'")
+    @Severity(value = SeverityLevel.MINOR)
     public void testArticleTitlePresence() {
 
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);

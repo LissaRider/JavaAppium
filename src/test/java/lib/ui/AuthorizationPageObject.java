@@ -1,5 +1,6 @@
 package lib.ui;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class AuthorizationPageObject extends MainPageObject {
@@ -14,16 +15,19 @@ public class AuthorizationPageObject extends MainPageObject {
         super(driver);
     }
 
+    @Step("Opening the auth page")
     public void clickAuthButton() {
         this.waitForElementVisible(LOGIN_BUTTON, "Кнопка перехода на форму авторизации не найдена.", 5);
         this.waitForElementClickableAndClick(LOGIN_BUTTON, "Кнопка перехода на форму авторизации не найдена.", 5);
     }
 
+    @Step("Entering the login data")
     public void enterLoginData(String login, String password) {
         this.waitForElementAndSendKeys(LOGIN_INPUT, login, "Поле ввода логина не найдено.", 5);
         this.waitForElementAndSendKeys(PASSWORD_INPUT, password, "Поле ввода пароля не найдено.", 5);
     }
 
+    @Step("Submitting the entered login data")
     public void submitForm() {
         this.waitForElementClickableAndClick(SUBMIT_BUTTON, "Кнопка входа по логину и паролю не найдена.", 5);
     }

@@ -34,14 +34,17 @@ abstract public class ArticlePageObject extends MainPageObject {
     }
 
     //region TEMPLATES METHODS
+    @Step("Get the article option by name '{optionTitle}'")
     private static String getOptionByName(String optionTitle) {
         return OPTION_BUTTON_BY_NAME_TPL.replace("{MENU_OPTION}", optionTitle);
     }
 
+    @Step("Get the reading list by name '{folderName}'")
     private static String getFolderByName(String folderName) {
         return READING_LIST_BY_NAME_TPL.replace("{FOLDER_NAME}", folderName);
     }
 
+    @Step("Get the article banner by substring '{substring}'")
     private static String getBannerBySubstring(String substring) {
         return ARTICLE_BANNER_BY_SUBSTRING_TPL.replace("{SUBSTRING}", substring);
     }
