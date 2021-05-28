@@ -18,6 +18,7 @@ public class ArticleTests extends CoreTestCase {
     @DisplayName("Compare article title with expected one")
     @Description("We open 'Java Object-oriented programming language' article and make sure the title is expected")
     @Step("Starting test testCompareArticleTitle")
+    @Severity(value =SeverityLevel.BLOCKER)
     public void testCompareArticleTitle() {
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
         ArticlePageObject articlePage = ArticlePageObjectFactory.get(driver);
@@ -46,6 +47,7 @@ public class ArticleTests extends CoreTestCase {
     @DisplayName("Swipe article to the footer")
     @Description("We open an article and swipe it to the footer")
     @Step("Starting test testSwipeArticle")
+    @Severity(value = SeverityLevel.MINOR)
     public void testSwipeArticle() {
 
         SearchPageObject searchPage = SearchPageObjectFactory.get(driver);
