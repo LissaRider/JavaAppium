@@ -8,7 +8,9 @@ import org.junit.Before;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.util.Properties;
 
@@ -79,16 +81,22 @@ public class CoreTestCase {
         }
     }
 
-    private void createAllurePropertyFile(){
+    private void createAllurePropertyFile() {
         String path = System.getProperty("allure.results.directory");
-        try{
+        File directory = new File(path);
+        if (!directory.exists()) {
+            System.out.printf("Внимание! Директория '%s' не найдена.\n", path);
+            directory.mkdir();
+            System.out.printf("Создана директория '%s'.\n", path);
+        }
+        try {
             Properties props = new Properties();
-            FileOutputStream fos =new FileOutputStream(path + "/environment.properties");
+            FileOutputStream fos = new FileOutputStream(path + "/environment.properties");
             props.setProperty("Environment", Platform.getInstance().getPlatformVar());
-            props.store(fos,"See https://github.com/allure-framework/allure-app/wiki/Environment");
+            props.store(fos, "See https://docs.qameta.io/allure/#_environment");
             fos.close();
-        } catch (Exception e){
-            System.err.println("IO problem when writing allure properties file");
+        } catch (Exception e) {
+            System.err.println("Внимание! Проблема ввода-вывода при записи файла свойств для allure отчета.");
             e.printStackTrace();
         }
     }

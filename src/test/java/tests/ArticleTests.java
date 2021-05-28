@@ -31,6 +31,8 @@ public class ArticleTests extends CoreTestCase {
 
         String articleTitle = articlePage.getArticleTitle();
 
+//        articlePage.takeScreenshot("article_page");
+
         Assert.assertEquals(
                 "\n  Ошибка! Отображается некорректный заголовок статьи.\n",
                 "Java (programming language)",

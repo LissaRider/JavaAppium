@@ -4,17 +4,21 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.PointOption;
+import io.qameta.allure.Attachment;
 import lib.Platform;
+import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 public class MainPageObject {
@@ -290,16 +294,16 @@ public class MainPageObject {
         return getAmountOfElements(locator) > 0;
     }
 
-    public void tryClickElementWithFewAttempts(String locator, String errorMessage, int amountOfAttempts){
-        int currentAttempts=0;
-        boolean needMoreAttempts=true;
-        while(needMoreAttempts){
+    public void tryClickElementWithFewAttempts(String locator, String errorMessage, int amountOfAttempts) {
+        int currentAttempts = 0;
+        boolean needMoreAttempts = true;
+        while (needMoreAttempts) {
             try {
-                this.waitForElementClickableAndClick(locator,errorMessage,1);
+                this.waitForElementClickableAndClick(locator, errorMessage, 1);
                 needMoreAttempts = false;
-            } catch (Exception e){
-                if(currentAttempts > amountOfAttempts){
-                    this.waitForElementClickableAndClick(locator,errorMessage,1);
+            } catch (Exception e) {
+                if (currentAttempts > amountOfAttempts) {
+                    this.waitForElementClickableAndClick(locator, errorMessage, 1);
                 }
             }
             ++currentAttempts;
@@ -326,5 +330,29 @@ public class MainPageObject {
             default:
                 throw new IllegalArgumentException(String.format("Невозможно получить тип локатора: %s", locatorWithType));
         }
+    }
+
+    public String takeScreenshot(String name) {
+        TakesScreenshot ts = this.driver;
+        File source = ts.getScreenshotAs(OutputType.FILE);
+        String path = System.getProperty("user.dir") + "\\target\\" + name + "_screenshot.png";
+        try {
+            FileUtils.copyFile(source, new File(path));
+            System.out.printf("Сделан скриншот: %s%n", path);
+        } catch (Exception e) {
+            System.out.printf("  Внимание! Невозможно сделать скриншот. Возникла ошибка: %s%n", e.getMessage());
+        }
+        return path;
+    }
+
+    @Attachment
+    public static byte[] screenshot(String path) {
+        byte[] bytes = new byte[0];
+        try {
+            bytes = Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            System.out.printf("  Внимание! Невозможно получить байты файла со скриншотом. Возникла ошибка: %s%n", e.getMessage());
+        }
+        return bytes;
     }
 }
