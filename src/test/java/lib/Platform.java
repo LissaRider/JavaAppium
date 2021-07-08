@@ -73,7 +73,8 @@ public class Platform {
         capabilities.setCapability("platformName", "Android");
         capabilities.setCapability("deviceName", "AndroidTestDevice");
         capabilities.setCapability("platformVersion", "8.0");
-        capabilities.setCapability("automationName", "Appium");
+//        capabilities.setCapability("automationName", "Appium");
+        capabilities.setCapability("automationName", "UiAutomator2");
         capabilities.setCapability("appPackage", "org.wikipedia");
         capabilities.setCapability("avd","and80");
         capabilities.setCapability("appActivity", ".main.MainActivity");

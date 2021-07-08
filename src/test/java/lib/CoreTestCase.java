@@ -1,21 +1,27 @@
 package lib;
 
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.qameta.allure.Step;
 import lib.ui.WelcomePageObject;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class CoreTestCase {
 
     protected RemoteWebDriver driver;
+    private static AppiumDriverLocalService server;
 
     @Before
     @Step("Run driver and session")
@@ -26,10 +32,49 @@ public class CoreTestCase {
         this.openWikiWebPageForMobileWeb();
     }
 
+    @BeforeClass
+    @Step("Run appium server")
+    public static void startAppiumServer() {
+        if (!Platform.getInstance().isMW()) {
+            System.out.println("Start appium server...");
+            AppiumServiceBuilder serviceBuilder = new AppiumServiceBuilder();
+
+            /*Use any port, in case the default 4723 is already taken (maybe by another Appium server)*/
+            // serviceBuilder.usingAnyFreePort();
+            /*Tell serviceBuilder where node is installed. Or set this path in an environment variable named NODE_PATH*/
+            // serviceBuilder.usingDriverExecutable(new File("/Users/jonahss/.nvm/versions/node/v12.1.0/bin/node"));
+            /*Tell serviceBuilder where Appium is installed. Or set this path in an environment variable named APPIUM_PATH*/
+            // serviceBuilder.withAppiumJS(new File("/Users/jonahss/.nvm/versions/node/v12.1.0/bin/appium"));
+            /*The XCUITest driver requires that a path to the Carthage binary is in the PATH variable. I have this set for my shell,
+             but the Java process does not see it. It can be inserted here.*/
+            if (Platform.getInstance().isIOS()) {
+                HashMap<String, String> environment = new HashMap();
+                environment.put("PATH", "/usr/local/bin:" + System.getenv("PATH"));
+                serviceBuilder.withEnvironment(environment);
+            }
+
+            server = AppiumDriverLocalService.buildService(serviceBuilder);
+            server.start();
+        } else {
+            System.out.printf("  Внимание! Метод startAppiumServer() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
+        }
+    }
+
     @After
     @Step("Remove driver and session")
     public void tearDown() {
         driver.quit();
+    }
+
+    @AfterClass
+    @Step("Stop appium server")
+    public static void stopAppiumServer() {
+        if (!Platform.getInstance().isMW()) {
+            System.out.println("Stop appium server...");
+            server.stop();
+        } else {
+            System.out.printf("  Внимание! Метод stopAppiumServer() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
+        }
     }
 
     @Step("Rotate screen to portrait mode")

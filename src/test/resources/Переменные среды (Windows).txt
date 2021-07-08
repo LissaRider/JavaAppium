@@ -1,0 +1,10 @@
+ANDROID_HOME C:\Users\lisan\AppData\Local\Android\Sdk
+APPIUM_PATH C:\Users\lisan\AppData\Roaming\npm\node_modules\appium
+JAVA_HOME C:\Program Files\Java\jdk1.8.0_291
+NODE_PATH C:\Users\lisan\AppData\Roaming\npm\node_modules
+PATH
+%JAVA_HOME%\bin
+%ANDROID_HOME%\emulator
+%ANDROID_HOME%\tools
+%ANDROID_HOME%\tools\bin
+%ANDROID_HOME%\platform-tools
