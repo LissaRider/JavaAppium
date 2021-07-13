@@ -62,7 +62,7 @@ public class Platform {
         capabilities.setCapability("platformName", "iOS");
         capabilities.setCapability("deviceName", "iPhone SE");
         capabilities.setCapability("platformVersion", "14.5");
-        capabilities.setCapability("udid", "B8379464-F378-4117-94ED-3633C95672BF");
+        capabilities.setCapability("udid", "0D67A646-F872-484A-A48D-F759CB59BD28");
         capabilities.setCapability("orientation", "PORTRAIT");
         capabilities.setCapability("app", new File("src/test/resources/apks/Wikipedia.app").getCanonicalPath());
         return capabilities;

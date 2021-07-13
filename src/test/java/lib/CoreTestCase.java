@@ -17,6 +17,7 @@ import java.io.FileOutputStream;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 public class CoreTestCase {
 
@@ -72,8 +73,29 @@ public class CoreTestCase {
         if (!Platform.getInstance().isMW()) {
             System.out.println("Stop appium server...");
             server.stop();
+            closeEmulatorOrSimulator();
         } else {
             System.out.printf("  Внимание! Метод stopAppiumServer() не работает для платформы '%s'.%n", Platform.getInstance().getPlatformVar());
+        }
+    }
+
+    /**
+     * Kills all running emulators/simulators
+     */
+    public static void closeEmulatorOrSimulator() {
+        String[] aCommand;
+        System.out.println("Killing emulator/simulator...");
+        if (Platform.getInstance().isAndroid()) {
+            aCommand = new String[]{"adb", "emu", "kill"};
+        } else {
+            aCommand = new String[]{"killall", "Simulator"};
+        }
+        try {
+            Process process = new ProcessBuilder(aCommand).start();
+            process.waitFor(1, TimeUnit.SECONDS);
+            System.out.println("Emulator/simulator closed successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
